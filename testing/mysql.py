@@ -4,9 +4,9 @@
 # This file is part of mysql-testing.
 #
 # mysql-testing is free software: you can redistribute it and/or
-# modify # it under the terms of the GNU General Public License as
-# published by # the Free Software Foundation, either version 3 of the
-# License, or # (at your option) any later version.
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
 #
 # mysql-testing is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -110,8 +110,7 @@ class MySQLTestHelper(object):
             pid = int(open(self._pid_file, "r").read())
         except IOError:
             return False
-        return _os.path.exists(self._socket_file) and \
-            _os.path.exists("/proc/%s" % pid)
+        return _os.path.exists("/proc/%s" % pid)
 
     def get_connection(self, db_name):
         db = _sqlalchemy_url.URL(
