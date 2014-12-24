@@ -56,3 +56,11 @@ def test_MySQLTestHelper_clean(my):
     my.clean()
     assert not _os.path.exists(my.get_basedir())
 
+
+def test_MySQLTesHelper_is_running(my):
+    assert my.is_running() == False
+    my.start_server()
+    assert my.is_running() == True
+    my.stop_server()
+    assert my.is_running() == False
+

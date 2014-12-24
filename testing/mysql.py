@@ -59,7 +59,6 @@ class MySQLTestHelper(object):
         self._error_log_file = _os.path.join(self._basedir, "error.log")
         self._pid_file = _os.path.join(self._basedir, "pid")
         self._socket_file = _os.path.join(self._basedir, "socket")
-        self._is_running = False
 
     def get_basedir(self):
         return self._basedir
@@ -75,7 +74,7 @@ class MySQLTestHelper(object):
         ], stdout=self._stdout)
 
     def start_server(self):
-        if self._is_running:
+        if self.is_running():
             print "The server is already running"
             return
         _subprocess.Popen([
@@ -94,20 +93,25 @@ class MySQLTestHelper(object):
             except Exception, e:
                 _time.sleep(1)
         connection.close()
-        self._is_running = True
 
     def stop_server(self):
         if _os.path.exists(self._pid_file):
-            pid = int(open(self._pid_file, "r").read())
             _subprocess.call([
                 "/usr/bin/mysqladmin",
                 "--user=root",
                 "--socket=%s" % self._socket_file,
                 "shutdown"
             ], stdout=self._stdout)
-            while _os.path.exists("/proc/%d" % pid):
+            while self.is_running():
                 _time.sleep(1)
-        self._is_running = False
+
+    def is_running(self):
+        try:
+            pid = int(open(self._pid_file, "r").read())
+        except IOError:
+            return False
+        return _os.path.exists(self._socket_file) and \
+            _os.path.exists("/proc/%s" % pid)
 
     def get_connection(self, db_name):
         db = _sqlalchemy_url.URL(
