@@ -22,6 +22,7 @@ import shutil as _shutil
 import sqlalchemy as _sqlalchemy
 import sqlalchemy.engine.url as _sqlalchemy_url
 import subprocess as _subprocess
+import sys as _sys
 import tempfile as _tempfile
 import time as _time
 
@@ -45,8 +46,11 @@ class MySQLTestHelper(object):
     >>> # Be aware that this wipes out the whole DB
     >>> con.clean()
     """
-    def __init__(self):
-        self._stdout = open(_os.devnull, "w")
+    def __init__(self, verbose=False):
+        if verbose:
+            self._stdout = _sys.stdout
+        else:
+            self._stdout = open(_os.devnull, "w")
         self._basedir = _tempfile.mkdtemp()
         self._current_user = _getpass.getuser(),
         self._datadir = _os.path.join(self._basedir, "data"),
